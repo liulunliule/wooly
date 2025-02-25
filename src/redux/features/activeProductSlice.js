@@ -7,6 +7,7 @@ export const fetchLatestProducts = createAsyncThunk(
     "products/fetchLatest",
     async () => {
         const response = await axios.get(`${API_ROOT}/homepage/latest-product`);
+        // console.log("fetchLatestProducts", response.data.data);
         return response.data.data;
     }
 );
@@ -25,6 +26,8 @@ export const fetchAllProducts = createAsyncThunk(
     "products/fetchAll",
     async () => {
         const response = await axios.get(`${API_ROOT}/product/get-all-product`);
+        console.log(response.data);
+        
         return response.data;
     }
 );
