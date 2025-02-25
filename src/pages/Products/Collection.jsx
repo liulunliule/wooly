@@ -51,7 +51,7 @@ function Collection() {
   return (
     <div className="flex flex-col sm:flex-row gap-6 pt-10 border-t">
       {/* Sidebar Filter */}
-      <div className="w-full sm:w-1/4 p-4 border-r">
+      <div className="w-full sm:w-1/5 p-4 border-r">
         <h2 className="text-lg font-semibold mb-4">Bộ Lọc</h2>
         <div>
           {categories?.map((category) => (
@@ -79,7 +79,7 @@ function Collection() {
       </div>
 
       {/* Product List */}
-      <div className="w-full sm:w-3/4 p-4">
+      <div className="w-full sm:w-5/6 p-4">
         <h2 className="text-lg font-semibold mb-4">Sản Phẩm</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {(searchQuery ? searchResults : products).length > 0 ? (
@@ -87,10 +87,10 @@ function Collection() {
               <Link
                 to={`/product/${product.productID}`}
                 key={product.id}
-                className="border p-4 rounded-lg shadow hover:shadow-lg transition"
+                className="border p-4 rounded-lg shadow hover:shadow-lg hover:scale-110 transition ease-in-out"
               >
                 <img
-                  src={Hero_image}
+                  src={product.imageUrl}
                   alt={product.name}
                   className="w-full h-40 object-cover rounded-md"
                 />

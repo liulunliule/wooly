@@ -39,17 +39,26 @@ function AvailableProduct() {
             key={product.id}
             className="border p-4 rounded-lg shadow hover:shadow-lg transition"
           >
-            <ProductItem
+            {/* <ProductItem
               key={product.productId}
               productName={product.productName}
               productPicture={product.productPicture}
               productPrice={product.productPrice}
+            /> */}
+            <img
+              src={product.productPicture}
+              alt={product.name}
+              className="w-full aspect-square object-cover rounded-md hover:scale-110 transition ease-in-out"
             />
+            <h3 className="text-md font-medium mt-2">{product.productName}</h3>
+            <p className="text-gray-600">{product.productPrice}đ</p>
           </Link>
         ))}
       </div>
       <div className="flex justify-center mt-6">
         <Button
+          component={Link}
+          to="/collection"
           variant="contained"
           color="primary"
           endIcon={<ArrowForwardIcon />} // Thêm icon
