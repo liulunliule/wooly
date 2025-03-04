@@ -11,6 +11,7 @@ import {
   clearCart,
 } from "~/redux/features/cartSlice";
 import { setSelectedProducts } from "~/redux/features/checkoutSlice";
+import { formatPrice } from "~/utils/formatPrice";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -116,7 +117,8 @@ function Cart() {
               </div>
 
               <div className="text-sm text-gray-500 font-medium">
-                <p>{product?.pricePerProduct?.toLocaleString()}đ</p>
+                {/* <p>{product?.pricePerProduct?.toLocaleString()}đ</p> */}
+                <p>{formatPrice(product.pricePerProduct)}</p>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -137,10 +139,11 @@ function Cart() {
 
               <div className="text-sm font-medium">
                 <p>
-                  {(
+                  {/* {(
                     product.pricePerProduct * product.quantity
                   ).toLocaleString()}
-                  đ
+                  đ */}
+                  {formatPrice(product.pricePerProduct * product.quantity)}
                 </p>
               </div>
 

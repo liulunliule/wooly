@@ -7,6 +7,7 @@ import { fetchBestSellerProductAPI } from "~/apis";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBestSellerProducts } from "~/redux/features/activeProductSlice";
 import { Link } from "react-router-dom";
+import { formatPrice } from "~/utils/formatPrice";
 
 function AvailableProduct() {
   // const [products, setProducts] = useState([]);
@@ -51,7 +52,7 @@ function AvailableProduct() {
               className="w-full aspect-square object-cover rounded-md hover:scale-110 transition ease-in-out"
             />
             <h3 className="text-md font-medium mt-2">{product.productName}</h3>
-            <p className="text-gray-600">{product.productPrice}đ</p>
+            <p className="text-gray-600">{formatPrice(product.productPrice)}</p>
           </Link>
         ))}
       </div>

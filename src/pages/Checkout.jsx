@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Hero_image from "~/assets/hero_img.jpg";
 import { createPaymentLink } from "~/redux/features/paymentSlice"; // Action để gọi API thanh toán
+import { formatPrice } from "~/utils/formatPrice";
 
 function Checkout() {
   const dispatch = useDispatch();
@@ -77,11 +78,13 @@ function Checkout() {
             <div className="flex-1">
               <p className="font-medium">{item.productName}</p>
               <p className="text-sm text-gray-500">
-                {item?.pricePerProduct?.toLocaleString()}đ x {item.quantity}
+                {/* {item?.pricePerProduct?.toLocaleString()}đ x {item.quantity} */}
+                {formatPrice(item.pricePerProduct)} x {item.quantity}
               </p>
             </div>
             <p className="font-semibold">
-              {(item?.pricePerProduct * item?.quantity)?.toLocaleString()}đ
+              {/* {(item?.pricePerProduct * item?.quantity)?.toLocaleString()}đ */}
+              {formatPrice(item.pricePerProduct * item.quantity)}
             </p>
           </div>
         ))}
@@ -90,7 +93,10 @@ function Checkout() {
       {/* Tổng tiền */}
       <div className="flex justify-between items-center font-semibold text-lg py-4">
         <p>Tổng tiền:</p>
-        <p className="text-red-500">{totalAmount?.toLocaleString()}đ</p>
+        <p className="text-red-500">
+          {/* {totalAmount?.toLocaleString()}đ */}
+          {formatPrice(totalAmount)}
+        </p>
       </div>
 
       {/* Thông tin người nhận */}

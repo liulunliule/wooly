@@ -5,6 +5,7 @@ import { fetchAllProducts } from "~/redux/features/activeProductSlice";
 import { fetchCategories } from "~/redux/features/categorySlice";
 import Hero_image from "~/assets/hero_img.jpg";
 import { searchProducts } from "~/redux/features/searchSlice";
+import { formatPrice } from "~/utils/formatPrice";
 
 function Collection() {
   const dispatch = useDispatch();
@@ -110,7 +111,8 @@ function Collection() {
                 <h3 className="text-md font-medium mt-2">
                   {product.productName}
                 </h3>
-                <p className="text-gray-600">{product.price}đ</p>
+                <p className="text-gray-600">{formatPrice(product.price)}</p>
+
                 <p className="text-gray-600">
                   Số lượng: {product.stockQuantity}
                 </p>
