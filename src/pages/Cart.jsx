@@ -8,58 +8,75 @@ import {
   fetchCart,
   updateCartQuantity,
   removeCartItem,
-  clearCart, // Thêm action xóa toàn bộ giỏ hàng
+  clearCart,
 } from "~/redux/features/cartSlice";
+import { setSelectedProducts } from "~/redux/features/checkoutSlice";
 
 function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { items: cartProducts, status } = useSelector((state) => state.cart);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const selectedProducts = useSelector(
+    (state) => state.checkout.selectedProducts
+  );
 
   useEffect(() => {
-    dispatch(fetchCart()); // Fetch cart khi component mount
+    dispatch(fetchCart());
   }, [dispatch]);
 
-  const handleCheckboxChange = (event, id) => {
+  const handleCheckboxChange = (event, product) => {
     if (event.target.checked) {
-      setSelectedProducts((prevSelected) => [...prevSelected, id]);
+      dispatch(setSelectedProducts([...selectedProducts, product]));
     } else {
-      setSelectedProducts((prevSelected) =>
-        prevSelected.filter((productId) => productId !== id)
+      dispatch(
+        setSelectedProducts(
+          selectedProducts.filter(
+            (p) => p.cartDetailId !== product.cartDetailId
+          )
+        )
       );
     }
   };
 
   const handleQuantityChange = (cartDetailId, newQuantity) => {
-    if (newQuantity < 1) return; // Không cho số lượng nhỏ hơn 1
+    if (newQuantity < 1) return;
     dispatch(updateCartQuantity({ cartDetailId, newQuantity }));
   };
 
   const handleRemoveProduct = (cartDetailId) => {
-    const confirmDelete = window.confirm(
-      "Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?"
-    );
-    if (confirmDelete) {
+    if (
+      window.confirm(
+        "Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?"
+      )
+    ) {
       dispatch(removeCartItem(cartDetailId));
     }
   };
 
   const handleClearCart = () => {
-    const confirmDeleteAll = window.confirm(
-      "Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi giỏ hàng không?"
-    );
-    if (confirmDeleteAll) {
+    if (
+      window.confirm(
+        "Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi giỏ hàng không?"
+      )
+    ) {
       dispatch(clearCart());
     }
   };
 
-  const totalPrice = cartProducts.reduce((total, product) => {
-    if (selectedProducts.includes(product.cartDetailId)) {
-      return total + product.pricePerProduct * product.quantity;
+  const handleProceedToCheckout = () => {
+    if (selectedProducts.length === 0) {
+      alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+      return;
     }
-    return total;
-  }, 0);
+    navigate("/checkout");
+  };
+
+  console.log("selectedProducts", selectedProducts);
+
+  const totalPrice = selectedProducts.reduce(
+    (total, product) => total + product.pricePerProduct * product.quantity,
+    0
+  );
 
   return (
     <div className="my-10">
@@ -67,50 +84,41 @@ function Cart() {
         <Title text1={"GIỎ HÀNG"} text2={"CỦA BẠN"} />
       </div>
 
-      {/* Loading State */}
-      {status === "loading" && (
+      {status === "loading" ? (
         <div className="text-center text-lg">Đang tải giỏ hàng...</div>
-      )}
-
-      {/* Cart content */}
-      <div className="space-y-6">
-        {cartProducts.length > 0 ? (
-          cartProducts.map((product) => (
+      ) : cartProducts.length > 0 ? (
+        <div className="space-y-6">
+          {cartProducts.map((product) => (
             <div
               key={product.cartDetailId}
               className="flex items-center space-x-6 border-b py-4"
             >
-              {/* Checkbox */}
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={selectedProducts.includes(product.cartDetailId)}
-                    onChange={(e) =>
-                      handleCheckboxChange(e, product.cartDetailId)
-                    }
+                    checked={selectedProducts.some(
+                      (p) => p.cartDetailId === product.cartDetailId
+                    )}
+                    onChange={(e) => handleCheckboxChange(e, product)}
                   />
                 }
                 label=""
               />
 
-              {/* Product Image */}
               <img
-                src={product.imageURL || Hero_image} // Nếu không có ảnh, dùng ảnh mặc định
+                src={product.imageURL || Hero_image}
                 alt={product.productName}
                 className="w-24 h-24 object-cover rounded"
               />
 
-              {/* Product Name */}
               <div className="flex-1">
                 <p className="font-medium text-lg">{product.productName}</p>
               </div>
 
-              {/* Product Price */}
               <div className="text-sm text-gray-500 font-medium">
                 <p>{product.pricePerProduct.toLocaleString()}đ</p>
               </div>
 
-              {/* Quantity */}
               <div className="flex items-center space-x-2">
                 <p className="text-sm">Số lượng:</p>
                 <input
@@ -127,7 +135,6 @@ function Cart() {
                 />
               </div>
 
-              {/* Total Price */}
               <div className="text-sm font-medium">
                 <p>
                   {(
@@ -137,7 +144,6 @@ function Cart() {
                 </p>
               </div>
 
-              {/* Delete Button */}
               <Button
                 variant="outlined"
                 color="secondary"
@@ -147,15 +153,14 @@ function Cart() {
                 Xóa
               </Button>
             </div>
-          ))
-        ) : (
-          <div className="text-center text-lg text-gray-500">
-            Chưa có sản phẩm nào trong giỏ hàng.
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-lg text-gray-500">
+          Chưa có sản phẩm nào trong giỏ hàng.
+        </div>
+      )}
 
-      {/* Tổng tiền của sản phẩm đã chọn */}
       {selectedProducts.length > 0 && (
         <div className="flex items-center justify-between mt-6 p-4 bg-gray-100 border-t">
           <p className="font-medium text-lg">Tổng tiền:</p>
@@ -167,7 +172,7 @@ function Cart() {
               variant="contained"
               color="warning"
               className="text-white px-8"
-              onClick={() => navigate("/checkout")}
+              onClick={handleProceedToCheckout}
             >
               THANH TOÁN
             </Button>
@@ -175,7 +180,6 @@ function Cart() {
         </div>
       )}
 
-      {/* Nút xóa toàn bộ giỏ hàng */}
       {cartProducts.length > 0 && (
         <div className="flex justify-center mt-6">
           <Button variant="outlined" color="error" onClick={handleClearCart}>

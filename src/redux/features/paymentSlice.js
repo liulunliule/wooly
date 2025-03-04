@@ -1,15 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_ROOT } from "~/utils/constants";
+import API_ROOT from "~/utils/constants";
 
 export const createPaymentLink = createAsyncThunk(
   "payment/createPaymentLink",
-  async (paymentData, { rejectWithValue }) => {
+  async (paymentData, { getState, rejectWithValue }) => {
     try {
-        console.log("paymentData",paymentData);
-        
-      const response = await axios.post(`${API_ROOT}/order/create-payment-link`, paymentData);
-      console.log("createPaymentLink",response);
+      const state = getState();
+      const token = state.auth.accessToken; 
+
+      if (!token) throw new Error("Không tìm thấy token!");
+
+      const response = await axios.post(
+        `${API_ROOT}/order/create-payment-link`,
+        paymentData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("createPaymentLink paymentData",paymentData);
+      console.log("createPaymentLink response", response);
       
       return response.data;
     } catch (error) {
