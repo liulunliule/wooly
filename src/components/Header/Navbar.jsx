@@ -3,13 +3,14 @@ import Wooly_Logo from "~/assets/Logo/Wooly_logo.png";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { Badge, IconButton, Menu, MenuItem } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { persistor } from "~/redux/store";
 import { logoutUser } from "~/redux/features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 import { searchProducts } from "~/redux/features/searchSlice";
+import { fetchCart } from "~/redux/features/cartSlice";
 
 function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -19,6 +20,13 @@ function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
+  const { items: cartProducts, status } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    if (accessToken) {
+      dispatch(fetchCart());
+    }
+  }, [dispatch, accessToken]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -137,13 +145,16 @@ function Navbar() {
           </Menu>
         </div>
 
-        <Link to="/cart" className="relative">
-          <IconButton>
-            <Badge badgeContent={4} color="primary">
-              <LocalMallIcon color="action" />
-            </Badge>
-          </IconButton>
-        </Link>
+        {/* Chỉ hiển thị giỏ hàng khi có accessToken */}
+        {accessToken && (
+          <Link to="/cart" className="relative">
+            <IconButton>
+              <Badge badgeContent={cartProducts.length} color="primary">
+                <LocalMallIcon color="action" />
+              </Badge>
+            </IconButton>
+          </Link>
+        )}
       </div>
     </div>
   );

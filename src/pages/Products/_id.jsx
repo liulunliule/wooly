@@ -69,7 +69,7 @@ function ProductDetail() {
 
   const openPopupBuy = () => {
     if (!accessToken) {
-      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng!");
+      toast.error("Bạn cần đăng nhập để mua sản phẩm!");
       return;
     }
     setIsPopupBuyOpen(true);
