@@ -49,14 +49,13 @@ function Checkout() {
       })),
     };
 
-    dispatch(createPaymentLink(orderData));
-    // .then((response) => {
-    //   if (response?.payload?.paymentUrl) {
-    //     window.location.href = response.payload.paymentUrl;
-    //   } else {
-    //     alert("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
-    //   }
-    // });
+    dispatch(createPaymentLink(orderData)).then((response) => {
+      if (response?.payload?.checkoutUrl) {
+        window.location.href = response.payload.checkoutUrl;
+      } else {
+        alert("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
+      }
+    });
   };
 
   return (

@@ -20,9 +20,9 @@ export const createPaymentLink = createAsyncThunk(
       );
 
       console.log("createPaymentLink paymentData",paymentData);
-      console.log("createPaymentLink response", response);
+      console.log("createPaymentLink response", response.data.data);
       
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Đã xảy ra lỗi");
     }
