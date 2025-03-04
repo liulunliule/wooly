@@ -30,27 +30,27 @@ export const createPaymentLink = createAsyncThunk(
 );
 
 const paymentSlice = createSlice({
-  name: "payment",
-  initialState: {
-    paymentLink: null,
-    status: "idle",
-    error: null,
-  },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(createPaymentLink.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(createPaymentLink.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.paymentLink = action.payload;
-      })
-      .addCase(createPaymentLink.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      });
-  },
+    name: "payment",
+    initialState: {
+        paymentLink: null,
+        status: "idle",
+        error: null,
+    },
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(createPaymentLink.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(createPaymentLink.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.paymentLink = action.payload;
+            })
+            .addCase(createPaymentLink.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
+    },
 });
 
 export default paymentSlice.reducer;
