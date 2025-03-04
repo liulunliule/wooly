@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "~/redux/features/accountSlice";
 import {
   Avatar,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -11,6 +12,8 @@ import {
   TextField,
 } from "@mui/material";
 import { Female, HelpOutline, Male } from "@mui/icons-material";
+import { toast } from "react-toastify";
+import { getOtp, changePassword } from "~/redux/features/authSlice";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -51,8 +54,23 @@ function Profile() {
   // State modal
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+    useState(false);
   const [newAvatar, setNewAvatar] = useState(user.avatar);
   const [editedUser, setEditedUser] = useState(user);
+
+  // State cho đổi mật khẩu
+  const [email, setEmail] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [otp, setOtp] = useState("");
+
+  // Cập nhật email mặc định khi modal đổi mật khẩu được mở
+  useEffect(() => {
+    if (isChangePasswordModalOpen) {
+      setEmail(user.email); // Đặt email mặc định là email của người dùng
+    }
+  }, [isChangePasswordModalOpen, user.email]);
 
   useEffect(() => {
     setEditedUser(user);
@@ -64,6 +82,8 @@ function Profile() {
   const closeAvatarModal = () => setIsAvatarModalOpen(false);
   const openEditModal = () => setIsEditModalOpen(true);
   const closeEditModal = () => setIsEditModalOpen(false);
+  const openChangePasswordModal = () => setIsChangePasswordModalOpen(true);
+  const closeChangePasswordModal = () => setIsChangePasswordModalOpen(false);
 
   // Xử lý upload ảnh
   const handleAvatarChange = (e) => {
@@ -88,6 +108,43 @@ function Profile() {
   const saveProfile = () => {
     setUser(editedUser);
     closeEditModal();
+  };
+
+  // Xử lý đổi mật khẩu
+  const handleChangePassword = async () => {
+    const data = {
+      email,
+      oldPassword,
+      newPassword,
+      otp,
+    };
+
+    const response = await dispatch(changePassword(data));
+    const status = response?.meta?.requestStatus;
+
+    // if (status === "fulfilled") {
+    //   toast.success("Đổi mật khẩu thành công!");
+    //   closeChangePasswordModal();
+    // } else {
+    //   toast.error("Đổi mật khẩu thất bại. Vui lòng kiểm tra lại thông tin!");
+    // }
+  };
+
+  // Xử lý lấy OTP
+  const handleGetOTP = async () => {
+    if (!email) {
+      toast.error("Vui lòng nhập email trước khi lấy OTP!");
+      return;
+    }
+
+    const response = await dispatch(getOtp(email));
+    const status = response?.meta?.requestStatus;
+
+    // if (status === "fulfilled") {
+    //   toast.success("OTP đã được gửi đến email của bạn!");
+    // } else {
+    //   toast.error("Gửi OTP thất bại. Vui lòng kiểm tra lại email!");
+    // }
   };
 
   return (
@@ -139,6 +196,14 @@ function Profile() {
               sx={{ mt: 2 }}
             >
               Chỉnh sửa hồ sơ
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={openChangePasswordModal}
+              sx={{ mt: 2, ml: 2 }}
+            >
+              Đổi mật khẩu
             </Button>
           </div>
         </div>
@@ -217,6 +282,67 @@ function Profile() {
             Hủy
           </Button>
           <Button onClick={saveProfile} color="primary">
+            Lưu
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal đổi mật khẩu */}
+      <Dialog
+        open={isChangePasswordModalOpen}
+        onClose={closeChangePasswordModal}
+      >
+        <DialogTitle>Đổi mật khẩu</DialogTitle>
+        <DialogContent>
+          {/* Trường nhập Email và nút Gửi OTP */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <TextField
+              fullWidth
+              margin="dense"
+              label="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleGetOTP} // Gán hàm handleGetOTP vào đây
+              sx={{ mt: 1 }}
+            >
+              Get OTP
+            </Button>
+          </Box>
+
+          {/* Các trường nhập khác */}
+          <TextField
+            fullWidth
+            margin="dense"
+            label="OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Mật khẩu cũ"
+            type="password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Mật khẩu mới"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeChangePasswordModal} color="secondary">
+            Hủy
+          </Button>
+          <Button onClick={handleChangePassword} color="primary">
             Lưu
           </Button>
         </DialogActions>
