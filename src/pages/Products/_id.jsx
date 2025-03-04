@@ -1,26 +1,33 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchProductById } from "~/redux/features/activeProductSlice";
 import { addToCart } from "~/redux/features/cartSlice";
 import { toast } from "react-toastify";
 import Hero_image from "~/assets/hero_img.jpg";
+import { setSelectedProducts } from "~/redux/features/checkoutSlice";
 
 function ProductDetail() {
   const { productId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     item: product,
     status,
     error,
   } = useSelector((state) => state.products.productDetail);
+
+  const selectedProducts = useSelector(
+    (state) => state.checkout.selectedProducts
+  );
   const { accessToken } = useSelector((state) => state.auth);
 
   const [selectedPart, setSelectedPart] = useState(0);
   const [selectedColors, setSelectedColors] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isPopupBuyOpen, setIsPopupBuyOpen] = useState(false);
 
   useEffect(() => {
     if (productId) dispatch(fetchProductById(productId));
@@ -60,6 +67,14 @@ function ProductDetail() {
     setIsPopupOpen(true);
   };
 
+  const openPopupBuy = () => {
+    if (!accessToken) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng!");
+      return;
+    }
+    setIsPopupBuyOpen(true);
+  };
+
   const handleAddToCart = () => {
     if (!productId || !product) {
       toast.error("Không tìm thấy sản phẩm!");
@@ -76,6 +91,31 @@ function ProductDetail() {
     dispatch(addToCart({ productId, quantity, cartItems }));
 
     setIsPopupOpen(false);
+  };
+
+  const handleBuyNow = () => {
+    if (!productId || !product) {
+      toast.error("Không tìm thấy sản phẩm!");
+      return;
+    }
+
+    const orderDetails = {
+      productId,
+      productName: product.productName,
+      pricePerProduct: product.price,
+      quantity,
+      imageURL: product.imageUrl || Hero_image,
+      partList: Object.keys(selectedColors).map((partIndex) => ({
+        partName: product.partNames[partIndex]?.partName,
+        partColor: selectedColors[partIndex]?.partColor,
+      })),
+    };
+
+    // Lưu thông tin sản phẩm vào selectedProducts
+    dispatch(setSelectedProducts([orderDetails]));
+
+    // Chuyển hướng đến trang thanh toán
+    navigate("/checkout");
   };
 
   return (
@@ -146,7 +186,10 @@ function ProductDetail() {
             >
               Thêm vào giỏ hàng
             </button>
-            <button className="w-full sm:w-1/2 bg-red-500 text-white py-3 rounded-lg text-lg font-medium hover:bg-red-600 transition">
+            <button
+              className="w-full sm:w-1/2 bg-red-500 text-white py-3 rounded-lg text-lg font-medium hover:bg-red-600 transition"
+              onClick={openPopupBuy}
+            >
               Mua ngay
             </button>
           </div>
@@ -202,6 +245,61 @@ function ProductDetail() {
                 onClick={handleAddToCart}
               >
                 Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isPopupBuyOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Xác nhận sản phẩm</h2>
+            <p className="text-lg font-medium">{product.productName}</p>
+            <p className="text-red-500 font-semibold">{product.price}đ</p>
+
+            <div className="mt-4">
+              <h3 className="text-lg font-medium">Chi tiết lựa chọn:</h3>
+              {Object.keys(selectedColors).map((partIndex) => (
+                <p key={partIndex}>
+                  {product.partNames[partIndex]?.partName} -{" "}
+                  <span
+                    className="inline-block w-4 h-4 rounded-full"
+                    style={{
+                      backgroundColor: selectedColors[partIndex]?.partColor,
+                    }}
+                  ></span>
+                </p>
+              ))}
+            </div>
+
+            <div className="mt-4">
+              <h3 className="text-lg font-medium">Số lượng:</h3>
+              <input
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                className="w-full mt-2 p-2 border rounded-lg"
+              />
+            </div>
+
+            <p className="mt-4 text-lg font-bold">
+              Tổng tiền: {product.price * quantity}đ
+            </p>
+
+            <div className="mt-4 flex justify-between">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-lg"
+                onClick={() => setIsPopupBuyOpen(false)}
+              >
+                Hủy
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                onClick={handleBuyNow}
+              >
+                Mua ngay
               </button>
             </div>
           </div>
