@@ -9,6 +9,7 @@ import { persistor } from "~/redux/store";
 import { logoutUser } from "~/redux/features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
+import { searchProducts } from "~/redux/features/searchSlice";
 
 function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -34,8 +35,21 @@ function Navbar() {
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchText.trim() !== "") {
-      navigate(`/collection`);
-      setShowSearch(false);
+      dispatch(
+        searchProducts({
+          productName: searchText,
+          minPrice: 1,
+          maxPrice: 999999,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          navigate("/collection");
+          setShowSearch(false);
+        })
+        .catch((error) => {
+          console.error("Search failed:", error);
+        });
     }
   };
 

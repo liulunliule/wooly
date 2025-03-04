@@ -2,77 +2,31 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import API_ROOT from "~/utils/constants";
 
-// export const searchProducts = createAsyncThunk(
-//   "search/fetchProducts",
-//   async (productName, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.get(
-//         `${API_ROOT}/homepage/search-product?productName=${encodeURIComponent(productName)}`
-//       );
-//       console.log("searchProducts",response);
-      
-//       return response.data.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || "Lỗi tìm kiếm sản phẩm");
-//     }
-//   }
-// );
-
-
-// export const searchProducts = createAsyncThunk(
-//     "search/fetchProducts",
-//     async ({ productName, categoryName }, { rejectWithValue }) => {
-//       try {
-//         const response = await axios.get(`${API_ROOT}/homepage/search-product`, {
-//           params: {
-//             productName: productName ? encodeURIComponent(productName) : "",
-//             categoryName: categoryName ? encodeURIComponent(categoryName) : "",
-//           },
-//         });
-//         console.log("searchProducts", response);
-//         return response.data.data;
-//       } catch (error) {
-//         return rejectWithValue(error.response?.data || "Lỗi tìm kiếm sản phẩm");
-//       }
-//     }
-//   );
-  
+// Async thunk để gọi API tìm kiếm sản phẩm
 export const searchProducts = createAsyncThunk(
   "search/searchProducts",
-  async (productName, { rejectWithValue }) => {
+  async ({ productName, minPrice, maxPrice }, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_ROOT}/homepage/search-product`, {
-        params: {
-          productName: productName ? encodeURIComponent(productName) : "",
-          minPrice: 1,
-          maxPrice: 9999999999,
-        },
+        params: { productName, minPrice, maxPrice },
       });
-      console.log("searchProducts",response);
+      console.log("searchProducts",response.data.data);
       
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Lỗi tìm kiếm sản phẩm");
+      return rejectWithValue(error.response.data);
     }
   }
 );
 
-      
-
 const searchSlice = createSlice({
   name: "search",
   initialState: {
-    results: [],
-    status: "idle", // idle | loading | succeeded | failed
+    searchResults: [],
+    status: "idle",
     error: null,
   },
-  reducers: {
-    clearSearchResults: (state) => {
-      state.results = [];
-      state.status = "idle";
-      state.error = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(searchProducts.pending, (state) => {
@@ -80,7 +34,7 @@ const searchSlice = createSlice({
       })
       .addCase(searchProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.results = action.payload;
+        state.searchResults = action.payload;
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.status = "failed";
@@ -89,5 +43,4 @@ const searchSlice = createSlice({
   },
 });
 
-export const { clearSearchResults } = searchSlice.actions;
 export default searchSlice.reducer;
