@@ -25,8 +25,8 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axios.post(`${API_ROOT}/auth/login`, data);
       const { accessToken, refreshToken, role, message } = response.data;
-      console.log("login",response.data);
-      
+      console.log("login", response.data);
+
       toast.success(message);
       return { accessToken, refreshToken, role };
     } catch (error) {
@@ -43,8 +43,8 @@ export const getOtp = createAsyncThunk(
     try {
       const response = await axios.post(`${API_ROOT}/auth/get-otp`, { email });
       toast.success(response.data.message);
-      console.log("OTP",response.data);
-      
+      console.log("OTP", response.data);
+
       return response.data;
     } catch (error) {
       toast.error(error.response?.data?.error || "Lấy OTP thất bại!");
@@ -53,15 +53,32 @@ export const getOtp = createAsyncThunk(
   }
 );
 
-// forgotPassword
+// Quên mật khẩu
 export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_ROOT}/auth/forgot-password`, data);
-      console.log("forgotPasswordSlice",response.data);
-      
+      console.log("forgotPasswordSlice", response.data);
+
       toast.success(response.data.message);
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Đổi mật khẩu thất bại!");
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// Đổi mật khẩu
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_ROOT}/auth/change-password`, data);
+      toast.success(response.data.message);
+      console.log("changePassword", response.data);
+
       return response.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Đổi mật khẩu thất bại!");
@@ -139,7 +156,7 @@ const authSlice = createSlice({
         state.error = action.payload?.message || "Có lỗi xảy ra!";
       })
 
-      // forgetPassword
+      // Quên mật khẩu
       .addCase(forgotPassword.pending, (state) => {
         state.status = "loading";
       })
@@ -147,6 +164,18 @@ const authSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(forgotPassword.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload?.message || "Có lỗi xảy ra!";
+      })
+
+      // Đổi mật khẩu
+      .addCase(changePassword.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
+      .addCase(changePassword.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload?.message || "Có lỗi xảy ra!";
       });
