@@ -3,50 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { fetchAllProducts } from "~/redux/features/activeProductSlice";
 import { fetchCategories } from "~/redux/features/categorySlice";
-import { searchProducts } from "~/redux/features/searchSlice";
 import Hero_image from "~/assets/hero_img.jpg";
 
 function Collection() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const searchQuery = queryParams.get("search");
-  const categoryQuery = queryParams.get("category");
-
-  const [selectedCategory, setSelectedCategory] = useState(categoryQuery || "");
   const dispatch = useDispatch();
 
   const { items: products, status } = useSelector(
     (state) => state.products.all
   );
-  const searchResults = useSelector((state) => state.search.results);
   const { categories } = useSelector((state) => state.categories);
 
   useEffect(() => {
-    if (searchQuery || selectedCategory) {
-      dispatch(
-        searchProducts({
-          productName: searchQuery || "",
-          categoryName: selectedCategory || "",
-        })
-      );
-    } else if (status === "idle") {
+    if (status === "idle") {
       dispatch(fetchAllProducts());
     }
 
     dispatch(fetchCategories());
-  }, [searchQuery, selectedCategory, status, dispatch]);
-
-  const handleCategoryChange = (categoryName) => {
-    setSelectedCategory(categoryName);
-
-    const params = new URLSearchParams({
-      search: searchQuery || "",
-      category: categoryName || "",
-    }).toString();
-
-    navigate(`/collection?${params}`);
-  };
+  }, [status, dispatch]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-6 pt-10 border-t">
@@ -56,20 +29,13 @@ function Collection() {
         <div>
           {categories?.map((category) => (
             <label key={category.id} className="block mb-2">
-              <input
-                type="radio"
-                name="categoryFilter"
-                className="mr-2"
-                checked={selectedCategory === category.name}
-                onChange={() => handleCategoryChange(category.name)}
-              />
+              <input type="radio" name="categoryFilter" className="mr-2" />
               {category.name}
             </label>
           ))}
         </div>
         <button
           onClick={() => {
-            setSelectedCategory(null);
             dispatch(fetchAllProducts());
           }}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
@@ -82,8 +48,8 @@ function Collection() {
       <div className="w-full sm:w-5/6 p-4">
         <h2 className="text-lg font-semibold mb-4">Sản Phẩm</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {(searchQuery ? searchResults : products).length > 0 ? (
-            (searchQuery ? searchResults : products).map((product) => (
+          {products.length > 0 ? (
+            products.map((product) => (
               <Link
                 to={`/product/${product.productID}`}
                 key={product.id}

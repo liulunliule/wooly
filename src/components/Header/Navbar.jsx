@@ -32,24 +32,9 @@ function Navbar() {
     persistor.purge();
   };
 
-  //   const handleSearch = (e) => {
-  //     if (e.key === "Enter" && searchText.trim() !== "") {
-  //       navigate(`/collection?search=${encodeURIComponent(searchText)}`);
-  //       setShowSearch(false);
-  //     }
-  //   };
-
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchText.trim() !== "") {
-      const queryParams = new URLSearchParams(location.search);
-      const currentCategory = queryParams.get("category") || ""; // Lấy category hiện tại từ URL nếu có
-
-      const params = new URLSearchParams({
-        search: searchText,
-        category: currentCategory,
-      }).toString();
-
-      navigate(`/collection?${params}`);
+      navigate(`/collection`);
       setShowSearch(false);
     }
   };

@@ -19,24 +19,44 @@ import API_ROOT from "~/utils/constants";
 // );
 
 
-export const searchProducts = createAsyncThunk(
-    "search/fetchProducts",
-    async ({ productName, categoryName }, { rejectWithValue }) => {
-      try {
-        const response = await axios.get(`${API_ROOT}/homepage/search-product`, {
-          params: {
-            productName: productName ? encodeURIComponent(productName) : "",
-            categoryName: categoryName ? encodeURIComponent(categoryName) : "",
-          },
-        });
-        console.log("searchProducts", response);
-        return response.data.data;
-      } catch (error) {
-        return rejectWithValue(error.response?.data || "Lỗi tìm kiếm sản phẩm");
-      }
-    }
-  );
+// export const searchProducts = createAsyncThunk(
+//     "search/fetchProducts",
+//     async ({ productName, categoryName }, { rejectWithValue }) => {
+//       try {
+//         const response = await axios.get(`${API_ROOT}/homepage/search-product`, {
+//           params: {
+//             productName: productName ? encodeURIComponent(productName) : "",
+//             categoryName: categoryName ? encodeURIComponent(categoryName) : "",
+//           },
+//         });
+//         console.log("searchProducts", response);
+//         return response.data.data;
+//       } catch (error) {
+//         return rejectWithValue(error.response?.data || "Lỗi tìm kiếm sản phẩm");
+//       }
+//     }
+//   );
   
+export const searchProducts = createAsyncThunk(
+  "search/searchProducts",
+  async (productName, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_ROOT}/homepage/search-product`, {
+        params: {
+          productName: productName ? encodeURIComponent(productName) : "",
+          minPrice: 1,
+          maxPrice: 9999999999,
+        },
+      });
+      console.log("searchProducts",response);
+      
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Lỗi tìm kiếm sản phẩm");
+    }
+  }
+);
+
       
 
 const searchSlice = createSlice({

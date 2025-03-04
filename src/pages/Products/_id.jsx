@@ -69,19 +69,11 @@ function ProductDetail() {
     const cartItems = Object.keys(selectedColors).map((partIndex) => ({
       productPartId: product.partNames[partIndex]?.partID || null,
       partColorId: selectedColors[partIndex]?.colorID || null,
-      name: product.partNames[partIndex]?.partName || "",
-      color: selectedColors[partIndex]?.partColor || "",
+      productPartName: product.partNames[partIndex]?.partName || "",
+      productPartColorName: selectedColors[partIndex]?.partColor || "",
     }));
 
-    dispatch(addToCart({ productId, quantity, cartItems }))
-      .then((response) => {
-        if (response.meta.requestStatus === "fulfilled") {
-          toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
-        } else {
-          toast.error("Không thể thêm sản phẩm vào giỏ hàng.");
-        }
-      })
-      .catch(() => toast.error("Có lỗi xảy ra!"));
+    dispatch(addToCart({ productId, quantity, cartItems }));
 
     setIsPopupOpen(false);
   };

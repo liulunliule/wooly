@@ -8,6 +8,9 @@ import accountReducer from "~/redux/features/accountSlice";
 import orderReducer from "./features/orderSlice";
 import cartReducer from "./features/cartSlice";
 import searchReducer from "./features/searchSlice";
+import paymentReducer from "./features/paymentSlice";
+import checkoutReducer from "./features/checkoutSlice";
+
 
 const persistConfig = {
   key: "auth",
@@ -26,6 +29,8 @@ export const store = configureStore({
     order: orderReducer,
     cart: cartReducer,
     search: searchReducer,
+    payment: paymentReducer,
+    checkout: checkoutReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
