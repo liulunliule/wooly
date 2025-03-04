@@ -6,6 +6,7 @@ import { addToCart } from "~/redux/features/cartSlice";
 import { toast } from "react-toastify";
 import Hero_image from "~/assets/hero_img.jpg";
 import { setSelectedProducts } from "~/redux/features/checkoutSlice";
+import { formatPrice } from "~/utils/formatPrice";
 
 function ProductDetail() {
   const { productId } = useParams();
@@ -132,7 +133,7 @@ function ProductDetail() {
         <div>
           <h1 className="text-2xl font-semibold">{product.productName}</h1>
           <p className="text-xl text-red-500 font-medium mt-2">
-            {product.price}đ
+            {formatPrice(product.price)}
           </p>
           <p className="mt-2 text-gray-600">{product.description}</p>
 

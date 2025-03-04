@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Hero_image from "~/assets/hero_img.jpg"; // Adjust the image import if needed
 import { fetchOrderHistory } from "~/redux/features/orderSlice";
+import { formatPrice } from "~/utils/formatPrice";
 
 function OrderHistory() {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ function OrderHistory() {
   };
 
   // Function to format price
-  const formatPrice = (price) => price.toLocaleString() + "đ";
+  // const formatPrice = (price) => price.toLocaleString() + "đ";
 
   // Function to handle "Xem chi tiết" button click
   const handleViewDetails = (orderDetailId) => {
