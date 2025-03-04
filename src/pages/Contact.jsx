@@ -5,23 +5,61 @@ function Contact() {
 
       <div className="bg-gray-100 p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-3">Thông Tin Liên Hệ</h2>
-        <p className="text-gray-700">📍 Địa chỉ: 123 Đường ABC, Quận 1, TP. Hồ Chí Minh</p>
+        <p className="text-gray-700">
+          📍 Địa chỉ: 123 Đường ABC, Quận 1, TP. Hồ Chí Minh
+        </p>
         <p className="text-gray-700">📞 Hotline: 0123 456 789</p>
         <p className="text-gray-700">
           📧 Email:{" "}
           <a href="mailto:support@shopx.com" className="text-blue-500">
-            support@.com
+            support@shopx.com
           </a>
         </p>
         <p className="text-gray-700">🕒 Giờ làm việc: 8:00 - 20:00 (T2 - CN)</p>
+        <p className="text-gray-700">
+          🌐 Fanpage Facebook:{" "}
+          <a
+            href="https://www.facebook.com/share/15HHbiVJQ2/?mibextid=wwXIfr"
+            className="text-blue-500"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wooly studio
+          </a>
+        </p>
+        <p className="text-gray-700">
+          🎵 Trang TikTok:{" "}
+          <a
+            href="https://l.messenger.com/l.php?u=https%3A%2F%2Fwww.tiktok.com%2F%40wooly087%3F_t%3DZS-8tb3nNDt1fU%26_r%3D1&h=AT0SvjEfc79ptanusxmjzeW6BfNR8lN7Vyavcu7ywkBn0FeN9Zh32_PWfas1l233nMQfu6lTKj-3385x7Ejhkmig5Bf7pRE3k3KV1WJ-JZ5zjxzQNM6Zaujw-LIZLtnw4VgcyA"
+            className="text-blue-500"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wooly
+          </a>
+        </p>
       </div>
 
       <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Gửi Tin Nhắn</h2>
         <form className="flex flex-col gap-4">
-          <input type="text" placeholder="Họ và tên" className="p-3 border rounded-md" required />
-          <input type="email" placeholder="Email" className="p-3 border rounded-md" required />
-          <textarea placeholder="Nội dung tin nhắn" className="p-3 border rounded-md h-32" required />
+          <input
+            type="text"
+            placeholder="Họ và tên"
+            className="p-3 border rounded-md"
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="p-3 border rounded-md"
+            required
+          />
+          <textarea
+            placeholder="Nội dung tin nhắn"
+            className="p-3 border rounded-md h-32"
+            required
+          />
           <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition">
             Gửi Tin Nhắn
           </button>
@@ -29,7 +67,9 @@ function Contact() {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-center mb-4">Vị Trí Cửa Hàng</h2>
+        <h2 className="text-2xl font-semibold text-center mb-4">
+          Vị Trí Cửa Hàng
+        </h2>
         <iframe
           title="Google Map"
           className="w-full h-64 rounded-lg shadow-md"
