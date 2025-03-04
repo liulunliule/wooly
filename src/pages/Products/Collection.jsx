@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchAllProducts } from "~/redux/features/activeProductSlice";
 import { fetchCategories } from "~/redux/features/categorySlice";
 import Hero_image from "~/assets/hero_img.jpg";
-import { searchProducts } from "~/redux/features/searchSlice";
+import {
+  searchProducts,
+  clearSearchResults,
+} from "~/redux/features/searchSlice";
 import { formatPrice } from "~/utils/formatPrice";
 
 function Collection() {
@@ -21,6 +24,8 @@ function Collection() {
 
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(1000000000000000000);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [showCategories, setShowCategories] = useState(false);
 
   useEffect(() => {
     if (status === "idle") {
@@ -30,8 +35,30 @@ function Collection() {
     dispatch(fetchCategories());
   }, [status, dispatch]);
 
+  useEffect(() => {
+    if (
+      selectedCategory !== null ||
+      minPrice !== 1 ||
+      maxPrice !== 1000000000000000000
+    ) {
+      handleSearch();
+    }
+  }, [selectedCategory, minPrice, maxPrice]);
+
+  const handleCategoryChange = (categoryName) => {
+    setSelectedCategory(categoryName);
+    setShowCategories(false);
+  };
+
   const handleSearch = () => {
-    dispatch(searchProducts({ productName: "", minPrice, maxPrice }))
+    dispatch(
+      searchProducts({
+        categoryName: selectedCategory || "",
+        productName: "",
+        minPrice,
+        maxPrice,
+      })
+    )
       .unwrap()
       .then(() => {
         navigate("/collection");
@@ -41,20 +68,52 @@ function Collection() {
       });
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const handleReset = () => {
+    setMinPrice(1);
+    setMaxPrice(1000000000000000000);
+    setSelectedCategory(null);
+    dispatch(clearSearchResults());
+    dispatch(fetchAllProducts());
+  };
+
   const displayedProducts = searchResults.length > 0 ? searchResults : products;
 
   return (
     <div className="flex flex-col sm:flex-row gap-6 pt-10 border-t">
-      {/* Sidebar Filter */}
       <div className="w-full sm:w-1/5 p-4 border-r">
         <h2 className="text-lg font-semibold mb-4">Bộ Lọc</h2>
         <div>
-          {categories?.map((category) => (
-            <label key={category.id} className="block mb-2">
-              <input type="radio" name="categoryFilter" className="mr-2" />
-              {category.name}
-            </label>
-          ))}
+          <h3
+            className="font-medium mb-2 cursor-pointer flex items-center"
+            onClick={() => setShowCategories(!showCategories)}
+          >
+            Danh mục {showCategories ? "▲" : "▼"}
+            {selectedCategory && (
+              <span className="ml-2 text-gray-400">{selectedCategory}</span>
+            )}
+          </h3>
+          {showCategories && (
+            <div>
+              {categories?.map((category) => (
+                <label key={category.id} className="block mb-2">
+                  <input
+                    type="radio"
+                    name="categoryFilter"
+                    className="mr-2"
+                    checked={selectedCategory === category.name}
+                    onChange={() => handleCategoryChange(category.name)}
+                  />
+                  {category.name}
+                </label>
+              ))}
+            </div>
+          )}
         </div>
         <div className="mt-4">
           <label className="block mb-2">Giá tối thiểu:</label>
@@ -62,6 +121,7 @@ function Collection() {
             type="number"
             value={minPrice}
             onChange={(e) => setMinPrice(Number(e.target.value))}
+            onKeyDown={handleKeyDown}
             className="w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
@@ -71,28 +131,24 @@ function Collection() {
             type="number"
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
+            onKeyDown={handleKeyDown}
             className="w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
-        <button
+        {/* <button
           onClick={handleSearch}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
         >
           Áp dụng bộ lọc
-        </button>
+        </button> */}
         <button
-          onClick={() => {
-            dispatch(fetchAllProducts());
-            setMinPrice(1);
-            setMaxPrice(999999);
-          }}
+          onClick={handleReset}
           className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition"
         >
           Tải lại tất cả sản phẩm
         </button>
       </div>
 
-      {/* Product List */}
       <div className="w-full sm:w-5/6 p-4">
         <h2 className="text-lg font-semibold mb-4">Sản Phẩm</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -112,7 +168,6 @@ function Collection() {
                   {product.productName}
                 </h3>
                 <p className="text-gray-600">{formatPrice(product.price)}</p>
-
                 <p className="text-gray-600">
                   Số lượng: {product.stockQuantity}
                 </p>

@@ -4,13 +4,14 @@ import API_ROOT from "~/utils/constants";
 
 // Async thunk để gọi API tìm kiếm sản phẩm
 export const searchProducts = createAsyncThunk(
-  "search/searchProducts",
-  async ({ productName, minPrice, maxPrice }, { rejectWithValue }) => {
+  "search/searchProducts",  
+  async ({ categoryName, productName, minPrice, maxPrice }, { rejectWithValue }) => {
+    console.log("welcome to searchProducts");
     try {
       const response = await axios.get(`${API_ROOT}/homepage/search-product`, {
-        params: { productName, minPrice, maxPrice },
+        params: { categoryName, productName, minPrice, maxPrice },
       });
-      console.log("searchProducts",response.data.data);
+      console.log("searchProducts", response);
       
       return response.data.data;
     } catch (error) {
@@ -26,7 +27,14 @@ const searchSlice = createSlice({
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    // Thêm action để xóa kết quả tìm kiếm
+    clearSearchResults: (state) => {
+      state.searchResults = [];
+      state.status = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(searchProducts.pending, (state) => {
@@ -43,4 +51,5 @@ const searchSlice = createSlice({
   },
 });
 
+export const { clearSearchResults } = searchSlice.actions; // Xuất action clearSearchResults
 export default searchSlice.reducer;
