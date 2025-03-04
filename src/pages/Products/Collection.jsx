@@ -118,7 +118,7 @@ function Collection() {
             ))
           ) : (
             <p className="text-gray-500 col-span-full text-center">
-              Không có sản phẩm phù hợp với yêu cầu của bạn.
+              Không có sản phẩm nào.
             </p>
           )}
         </div>
