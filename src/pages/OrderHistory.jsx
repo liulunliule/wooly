@@ -79,7 +79,7 @@ function OrderHistory() {
 
                   {/* Product Price */}
                   <div className="text-sm text-gray-500 font-medium">
-                    <p>{formatPrice(product.productPrice)}</p>
+                    <p>{formatPrice(product?.productPrice)}</p>
                   </div>
 
                   {/* Quantity */}
@@ -92,7 +92,7 @@ function OrderHistory() {
                   <div className="text-sm font-medium">
                     <p>
                       {formatPrice(
-                        product.productPrice * product.productQuantity
+                        product?.productPrice * product?.productQuantity
                       )}
                     </p>
                   </div>

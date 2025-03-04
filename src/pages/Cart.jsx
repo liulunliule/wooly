@@ -106,7 +106,7 @@ function Cart() {
               />
 
               <img
-                src={product.imageURL || Hero_image}
+                src={product.imageURL}
                 alt={product.productName}
                 className="w-24 h-24 object-cover rounded"
               />
@@ -116,7 +116,7 @@ function Cart() {
               </div>
 
               <div className="text-sm text-gray-500 font-medium">
-                <p>{product.pricePerProduct.toLocaleString()}đ</p>
+                <p>{product?.pricePerProduct?.toLocaleString()}đ</p>
               </div>
 
               <div className="flex items-center space-x-2">
