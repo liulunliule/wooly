@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Hero_image from "~/assets/hero_img.jpg";
 import { createPaymentLink } from "~/redux/features/paymentSlice"; // Action để gọi API thanh toán
 import { formatPrice } from "~/utils/formatPrice";
+import { toast } from "react-toastify";
 
 function Checkout() {
   const dispatch = useDispatch();
@@ -51,10 +52,13 @@ function Checkout() {
     };
 
     dispatch(createPaymentLink(orderData)).then((response) => {
+      console.log("createPaymentLink(orderData) response", response);
+
       if (response?.payload?.checkoutUrl) {
         window.location.href = response.payload.checkoutUrl;
       } else {
         alert("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
+        // toast.error("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
       }
     });
   };

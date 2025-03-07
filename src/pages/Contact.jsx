@@ -12,7 +12,7 @@ function Contact() {
         <p className="text-gray-700">
           📧 Email:{" "}
           <a href="mailto:support@shopx.com" className="text-blue-500">
-            support@shopx.com
+            support@wooly.com{" "}
           </a>
         </p>
         <p className="text-gray-700">🕒 Giờ làm việc: 8:00 - 20:00 (T2 - CN)</p>

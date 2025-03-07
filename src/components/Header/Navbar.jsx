@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 import { searchProducts } from "~/redux/features/searchSlice";
 import { fetchCart } from "~/redux/features/cartSlice";
+import Logo from "~/assets/Logo";
 
 function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -63,7 +64,8 @@ function Navbar() {
 
   return (
     <div className="flex items-center justify-between py-5 font-medium relative">
-      <img src={Wooly_Logo} className="w-28" alt="Wooly Logo" />
+      {/* <img src={Wooly_Logo} className="w-28" alt="Wooly Logo" /> */}
+      <Logo className="w-28" />
       <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
         <NavLink to="/" className="flex flex-col items-center gap-1">
           <p>TRANG CHỦ</p>

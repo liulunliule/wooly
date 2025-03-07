@@ -12,9 +12,11 @@ export const registerUser = createAsyncThunk(
       toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.error || "Đăng ký thất bại!");
+      // toast.error(error.response?.data?.error || "Đăng ký thất bại!");
+      toast.error(error.response?.data?.message || "Đăng ký thất bại!");
       return rejectWithValue(error.response?.data || error.message);
     }
+    
   }
 );
 
@@ -26,15 +28,19 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(`${API_ROOT}/auth/login`, data);
       const { accessToken, refreshToken, role, message } = response.data;
       console.log("login", response.data);
-
+      console.log(response);
       toast.success(message);
       return { accessToken, refreshToken, role };
     } catch (error) {
-      toast.error(error.response?.data?.error || "Đăng nhập thất bại!");
+      console.log(error);
+      // toast.error(error.response?.data?.error || "Đăng nhập thất bại!");
+      toast.error(error.response?.data?.message || "Đăng nhập thất bại!");
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
+
 
 // Lấy OTP
 export const getOtp = createAsyncThunk(
@@ -47,7 +53,8 @@ export const getOtp = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.error || "Lấy OTP thất bại!");
+      // toast.error(error.response?.data?.error || "Lấy OTP thất bại!");
+      toast.error(error.response?.data?.message || "Lấy OTP thất bại!");
       return rejectWithValue(error.response?.data || error.message);
     }
   }

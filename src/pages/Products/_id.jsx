@@ -104,7 +104,7 @@ function ProductDetail() {
 
     dispatch(addToCart({ productId, quantity, cartItems }));
     setIsPopupOpen(false);
-    toast.success("Đã thêm sản phẩm vào giỏ hàng!");
+    // toast.success("Đã thêm sản phẩm vào giỏ hàng!");
   };
 
   const handleBuyNow = () => {
@@ -120,8 +120,10 @@ function ProductDetail() {
       quantity,
       imageURL: product.imageUrl || Hero_image,
       partList: Object.keys(selectedColors).map((partIndex) => ({
+        partId: product.partNames[partIndex]?.partID || null,
         partName: product.partNames[partIndex]?.partName,
         partColor: selectedColors[partIndex]?.partColor,
+        partDescription: "",
       })),
     };
 

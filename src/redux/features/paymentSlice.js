@@ -1,31 +1,37 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 import API_ROOT from "~/utils/constants";
 
 export const createPaymentLink = createAsyncThunk(
   "payment/createPaymentLink",
   async (paymentData, { getState, rejectWithValue }) => {
-    try {
-      const state = getState();
-      const token = state.auth.accessToken; 
+    console.log("createPaymentLink paymentData",paymentData);
 
-      if (!token) throw new Error("Không tìm thấy token!");
+    // try {
+    //   const state = getState();
+    //   const token = state.auth.accessToken; 
 
-      const response = await axios.post(
-        `${API_ROOT}/order/create-payment-link`,
-        paymentData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+    //   if (!token) throw new Error("Không tìm thấy token!");
 
-      console.log("createPaymentLink paymentData",paymentData);
-      console.log("createPaymentLink response", response.data.data);
+    //   const response = await axios.post(
+    //     `${API_ROOT}/order/create-payment-link`,
+    //     paymentData,
+    //     {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     }
+    //   );
+
+    //   console.log("createPaymentLink paymentData",paymentData);
+    //   console.log("createPaymentLink response", response);
+    //   // console.log("createPaymentLink test mess err", response.data.message);
+    //   // toast.info(response.data.message)
       
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Đã xảy ra lỗi");
-    }
+    //   return response.data.data;
+    // } catch (error) {
+    //   toast.error(error.response.data.message)
+    //   return rejectWithValue(error.response?.data || "Đã xảy ra lỗi");
+    // }
   }
 );
 
