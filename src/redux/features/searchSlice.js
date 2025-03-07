@@ -13,7 +13,7 @@ export const searchProducts = createAsyncThunk(
       });
       console.log("searchProducts", response);
       
-      return response.data.data;
+      return response.data.data.products;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

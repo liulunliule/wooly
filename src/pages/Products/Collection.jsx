@@ -30,6 +30,7 @@ function Collection() {
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchAllProducts());
+      console.log();
     }
 
     dispatch(fetchCategories());
@@ -83,6 +84,7 @@ function Collection() {
   };
 
   const displayedProducts = searchResults.length > 0 ? searchResults : products;
+  console.log(displayedProducts);
 
   return (
     <div className="flex flex-col sm:flex-row gap-6 pt-10 border-t">

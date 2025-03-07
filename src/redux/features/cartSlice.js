@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import API_ROOT from "~/utils/constants";
+import { logout, logoutUser } from "./authSlice";
 
 const getAuthHeaders = (getState) => {
   const token = getState().auth.accessToken;
@@ -12,6 +14,8 @@ const getAuthHeaders = (getState) => {
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, quantity, cartItems }, { rejectWithValue, getState }) => {
+    const dispatch = useDispatch();
+
     const state = getState();
     const token = state.auth.accessToken; 
 
@@ -31,6 +35,9 @@ export const addToCart = createAsyncThunk(
         }
       );
       console.log("addToCart",response);
+      if(response.data.status===500){
+        dispatch(logoutUser());
+      }
       
       toast.success(response.data);
       return response.data;
