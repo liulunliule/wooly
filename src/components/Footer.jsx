@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Logo from "~/assets/Logo";
 import Wooly_Logo from "~/assets/Logo/Wooly_logo.png";
 
@@ -18,10 +19,16 @@ function Footer() {
           <div>
             <p className="text-xl font-medium mb-5"> Về chúng tôi</p>
             <ul className="flex flex-col gap-1 text-gray-600">
-              <li>Giới thiệu</li>
-              <li>Sản phẩm</li>
+              <li>
+                <Link to="/about">Giới thiệu</Link>
+              </li>
+              <li>
+                <Link to="/collection">Sản phẩm</Link>
+              </li>
               <li>Tin tức</li>
-              <li>Liên hệ</li>
+              <li>
+                <Link to="/contact">Liên hệ</Link>
+              </li>
             </ul>
           </div>
           <div>
