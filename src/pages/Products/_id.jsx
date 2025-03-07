@@ -1,3 +1,6 @@
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -151,52 +154,93 @@ function ProductDetail() {
                 {formatPrice(product.price)}
               </p>
               <p className="mt-2 text-gray-600">{product.description}</p>
-
-              {/* Part Selection */}
               {product.partNames && (
                 <div className="mt-4">
                   <h3 className="text-lg font-medium mb-2">Chọn bộ phận:</h3>
-                  <div className="flex gap-3">
+                  <Slider
+                    dots={false}
+                    infinite={false}
+                    speed={100}
+                    slidesToShow={3}
+                    slidesToScroll={2}
+                    responsive={[
+                      {
+                        breakpoint: 1024,
+                        settings: {
+                          slidesToShow: 2,
+                          slidesToScroll: 1,
+                        },
+                      },
+                      {
+                        breakpoint: 600,
+                        settings: {
+                          slidesToShow: 1,
+                          slidesToScroll: 1,
+                        },
+                      },
+                    ]}
+                  >
                     {product.partNames.map(({ partID, partName }, index) => (
-                      <button
-                        key={partID}
-                        className={`px-4 py-2 border-2 rounded-lg ${
-                          selectedPart === index
-                            ? "border-black bg-gray-200"
-                            : "border-gray-300"
-                        }`}
-                        onClick={() => setSelectedPart(index)}
-                      >
-                        {partName}
-                      </button>
+                      <div key={partID} className="px-2">
+                        <button
+                          className={`w-full px-4 py-2 border-2 rounded-lg ${
+                            selectedPart === index
+                              ? "border-black bg-gray-200"
+                              : "border-gray-300"
+                          }`}
+                          onClick={() => setSelectedPart(index)}
+                        >
+                          {partName}
+                        </button>
+                      </div>
                     ))}
-                  </div>
+                  </Slider>
                 </div>
               )}
-
-              {/* Color Selection */}
               {product.partColors && (
                 <div className="mt-4">
                   <h3 className="text-lg font-medium mb-2">Chọn màu:</h3>
-                  <div className="flex gap-3">
+                  <Slider
+                    dots={false}
+                    infinite={false}
+                    speed={100}
+                    slidesToShow={5}
+                    slidesToScroll={5}
+                    responsive={[
+                      {
+                        breakpoint: 1024,
+                        settings: {
+                          slidesToShow: 4,
+                          slidesToScroll: 1,
+                        },
+                      },
+                      {
+                        breakpoint: 600,
+                        settings: {
+                          slidesToShow: 3,
+                          slidesToScroll: 1,
+                        },
+                      },
+                    ]}
+                  >
                     {product.partColors.map(({ colorID, partColor }) => (
-                      <button
-                        key={colorID}
-                        className={`w-10 h-10 rounded-full border-2 ${
-                          selectedColors[selectedPart]?.colorID === colorID
-                            ? "border-black scale-110"
-                            : "border-gray-300"
-                        }`}
-                        style={{ backgroundColor: partColor }}
-                        onClick={() =>
-                          handleColorChange(selectedPart, colorID, partColor)
-                        }
-                      />
+                      <div key={colorID} className="px-2">
+                        <button
+                          className={`w-10 h-10 rounded-full border-2 ${
+                            selectedColors[selectedPart]?.colorID === colorID
+                              ? "border-black scale-110"
+                              : "border-gray-300"
+                          }`}
+                          style={{ backgroundColor: partColor }}
+                          onClick={() =>
+                            handleColorChange(selectedPart, colorID, partColor)
+                          }
+                        />
+                      </div>
                     ))}
-                  </div>
+                  </Slider>
                 </div>
               )}
-
               {/* Action Buttons */}
               <div className="mt-6 flex gap-4">
                 <button
