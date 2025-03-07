@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchAllProducts } from "~/redux/features/activeProductSlice";
 import { fetchCategories } from "~/redux/features/categorySlice";
-import Hero_image from "~/assets/hero_img.jpg";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import {
   searchProducts,
   clearSearchResults,
@@ -14,34 +14,45 @@ function Collection() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { items: products, status } = useSelector(
-    (state) => state.products.all
-  );
+  const {
+    items: products,
+    status,
+    totalItems: allTotalItems,
+    totalPages: allTotalPages,
+    currentPage: allCurrentPage,
+  } = useSelector((state) => state.products.all);
+
+  const {
+    searchResults,
+    status: searchStatus,
+    totalItems: searchTotalItems,
+    totalPages: searchTotalPages,
+    currentPage: searchCurrentPage,
+  } = useSelector((state) => state.search);
+
   const { categories } = useSelector((state) => state.categories);
-  const { searchResults, status: searchStatus } = useSelector(
-    (state) => state.search
-  );
 
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(1000000000000000000);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showCategories, setShowCategories] = useState(false);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchAllProducts());
+      dispatch(fetchAllProducts(page));
     }
-
     dispatch(fetchCategories());
-  }, [status, dispatch]);
+  }, [status, dispatch, page]);
 
   useEffect(() => {
     if (
-      selectedCategory !== null ||
+      selectedCategory ||
       minPrice !== 1 ||
       maxPrice !== 1000000000000000000
     ) {
-      handleSearch();
+      setPage(0);
+      handleSearch(0);
     }
   }, [selectedCategory, minPrice, maxPrice]);
 
@@ -50,13 +61,14 @@ function Collection() {
     setShowCategories(false);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (page = 0) => {
     dispatch(
       searchProducts({
         categoryName: selectedCategory || "",
         productName: "",
         minPrice,
         maxPrice,
+        page,
       })
     )
       .unwrap()
@@ -70,7 +82,7 @@ function Collection() {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      handleSearch();
+      handleSearch(page);
     }
   };
 
@@ -79,10 +91,28 @@ function Collection() {
     setMaxPrice(1000000000000000000);
     setSelectedCategory(null);
     dispatch(clearSearchResults());
-    dispatch(fetchAllProducts());
+    dispatch(fetchAllProducts(0));
+    setPage(0);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    if (
+      selectedCategory ||
+      minPrice !== 1 ||
+      maxPrice !== 1000000000000000000
+    ) {
+      handleSearch(newPage);
+    } else {
+      dispatch(fetchAllProducts(newPage));
+    }
   };
 
   const displayedProducts = searchResults.length > 0 ? searchResults : products;
+  const currentTotalPages =
+    searchResults.length > 0 ? searchTotalPages : allTotalPages;
+  const currentPage =
+    searchResults.length > 0 ? searchCurrentPage : allCurrentPage;
 
   return (
     <div className="flex flex-col sm:flex-row gap-6 pt-10 border-t">
@@ -135,12 +165,6 @@ function Collection() {
             className="w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
-        {/* <button
-          onClick={handleSearch}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-        >
-          Áp dụng bộ lọc
-        </button> */}
         <button
           onClick={handleReset}
           className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition"
@@ -156,7 +180,7 @@ function Collection() {
             displayedProducts.map((product) => (
               <Link
                 to={`/product/${product.productID}`}
-                key={product.id}
+                key={product.productID}
                 className="border p-4 rounded-lg shadow hover:shadow-lg hover:scale-110 transition ease-in-out"
               >
                 <img
@@ -178,6 +202,25 @@ function Collection() {
               Không có sản phẩm nào.
             </p>
           )}
+        </div>
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 0}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition disabled:bg-gray-300 flex items-center"
+          >
+            <ChevronLeftIcon className="h-5 w-5" />
+          </button>
+          <span className="mx-4 self-center">
+            Trang {currentPage + 1} / {currentTotalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === currentTotalPages - 1}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition disabled:bg-gray-300 flex items-center"
+          >
+            <ChevronRightIcon className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </div>

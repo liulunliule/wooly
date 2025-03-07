@@ -2,18 +2,19 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import API_ROOT from "~/utils/constants";
 
-// Async thunk để gọi API tìm kiếm sản phẩm
 export const searchProducts = createAsyncThunk(
-  "search/searchProducts",  
-  async ({ categoryName, productName, minPrice, maxPrice }, { rejectWithValue }) => {
-    console.log("welcome to searchProducts");
+  "search/searchProducts",
+  async ({ categoryName, productName, minPrice, maxPrice, page = 0 }, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_ROOT}/homepage/search-product`, {
-        params: { categoryName, productName, minPrice, maxPrice },
+        params: { categoryName, productName, minPrice, maxPrice, page },
       });
-      console.log("searchProducts", response);
-      
-      return response.data.data;
+      return {
+        products: response.data.data.products,
+        totalItems: response.data.data.totalItems,
+        totalPages: response.data.data.totalPages,
+        currentPage: response.data.data.currentPage,
+      };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -26,13 +27,18 @@ const searchSlice = createSlice({
     searchResults: [],
     status: "idle",
     error: null,
+    totalItems: 0,
+    totalPages: 0,
+    currentPage: 0,
   },
   reducers: {
-    // Thêm action để xóa kết quả tìm kiếm
     clearSearchResults: (state) => {
       state.searchResults = [];
       state.status = "idle";
       state.error = null;
+      state.totalItems = 0;
+      state.totalPages = 0;
+      state.currentPage = 0;
     },
   },
   extraReducers: (builder) => {
@@ -42,7 +48,10 @@ const searchSlice = createSlice({
       })
       .addCase(searchProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.searchResults = action.payload;
+        state.searchResults = action.payload.products;
+        state.totalItems = action.payload.totalItems;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.status = "failed";
@@ -51,5 +60,5 @@ const searchSlice = createSlice({
   },
 });
 
-export const { clearSearchResults } = searchSlice.actions; // Xuất action clearSearchResults
+export const { clearSearchResults } = searchSlice.actions;
 export default searchSlice.reducer;
