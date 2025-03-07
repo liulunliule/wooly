@@ -25,9 +25,37 @@ function Cart() {
     dispatch(fetchCart());
   }, [dispatch]);
 
+  // const handleCheckboxChange = (event, product) => {
+  //   if (event.target.checked) {
+  //     dispatch(setSelectedProducts([...selectedProducts, product]));
+  //   } else {
+  //     dispatch(
+  //       setSelectedProducts(
+  //         selectedProducts.filter(
+  //           (p) => p.cartDetailId !== product.cartDetailId
+  //         )
+  //       )
+  //     );
+  //   }
+  // };
   const handleCheckboxChange = (event, product) => {
+    const selectedProduct = {
+      cartDetailId: product.cartDetailId,
+      productId: product.productId,
+      productName: product.productName,
+      pricePerProduct: product.pricePerProduct,
+      quantity: product.quantity,
+      imageURL: product.imageURL,
+      partList: product.parts.map((part) => ({
+        partId: part.productPartId,
+        partName: part.productPartName,
+        partDescription: "part infor for " + part.productPartName,
+        partColor: part.productPartColorName,
+      })),
+    };
+
     if (event.target.checked) {
-      dispatch(setSelectedProducts([...selectedProducts, product]));
+      dispatch(setSelectedProducts([...selectedProducts, selectedProduct]));
     } else {
       dispatch(
         setSelectedProducts(
@@ -114,6 +142,20 @@ function Cart() {
 
               <div className="flex-1">
                 <p className="font-medium text-lg">{product.productName}</p>
+                <div className="mt-2 space-y-1">
+                  {product.parts.map((part, index) => (
+                    <div key={index} className="text-sm text-gray-600">
+                      <span>{part.productPartName}</span>
+                      <span className="ml-2">
+                        - Màu:{" "}
+                        <span
+                          className="inline-block w-4 h-4 rounded-full border border-gray-300"
+                          style={{ backgroundColor: part.productPartColorName }}
+                        ></span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="text-sm text-gray-500 font-medium">

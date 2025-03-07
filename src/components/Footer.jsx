@@ -1,13 +1,15 @@
+import Logo from "~/assets/Logo";
 import Wooly_Logo from "~/assets/Logo/Wooly_logo.png";
 
 function Footer() {
   return (
     <div>
-      <div className="mt-40">
+      <div className="mt-20">
         <hr />
         <div className="flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10  text-sm">
           <div>
-            <img src={Wooly_Logo} alt="" className="mb-5 w-32" />
+            {/* <img src={Wooly_Logo} alt="" className="mb-5 w-32" /> */}
+            <Logo className="mb-5 w-32" />
             <p className="w-full md:w-2/3  text-gray-600">
               Tạo Nên Sắc Màu Cuộc Sống, Biến sợi len thành nghệ thuật, mang ấm
               áp đến bạn" 🌿 "Chạm vào từng sợi len, cảm nhận sự tinh tế"

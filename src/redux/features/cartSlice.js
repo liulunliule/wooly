@@ -30,7 +30,9 @@ export const addToCart = createAsyncThunk(
           },
         }
       );
-      toast.success("Đã thêm vào giỏ hàng thành công!");
+      console.log("addToCart",response);
+      
+      toast.success(response.data);
       return response.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Thêm vào giỏ hàng thất bại!");
@@ -52,7 +54,9 @@ export const fetchCart = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       console.error("fetchCart error:", error);
-      toast.error("Không thể lấy dữ liệu giỏ hàng!");
+      // toast.error("Không thể lấy dữ liệu giỏ hàng!");
+      toast.error(error.response?.data?.message||"Không thể lấy dữ liệu giỏ hàng!");
+      toast.error(error.AxiosError.message)
       return rejectWithValue(error.response?.data || error.message);
     }
   }
