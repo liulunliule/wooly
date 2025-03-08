@@ -1,6 +1,3 @@
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -142,9 +139,9 @@ function ProductDetail() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <img
-                src={product.imageUrl || Hero_image}
+                src={product.imageUrl}
                 alt={product.productName}
-                className="w-full h-80 object-cover rounded-lg"
+                className="w-full h-100 object-cover rounded-lg"
               />
             </div>
 
@@ -154,78 +151,37 @@ function ProductDetail() {
                 {formatPrice(product.price)}
               </p>
               <p className="mt-2 text-gray-600">{product.description}</p>
+              {/* Part Selection */}
               {product.partNames && (
                 <div className="mt-4">
                   <h3 className="text-lg font-medium mb-2">Chọn bộ phận:</h3>
-                  <Slider
-                    dots={false}
-                    infinite={false}
-                    speed={100}
-                    slidesToShow={3}
-                    slidesToScroll={2}
-                    responsive={[
-                      {
-                        breakpoint: 1024,
-                        settings: {
-                          slidesToShow: 2,
-                          slidesToScroll: 1,
-                        },
-                      },
-                      {
-                        breakpoint: 600,
-                        settings: {
-                          slidesToShow: 1,
-                          slidesToScroll: 1,
-                        },
-                      },
-                    ]}
-                  >
+                  <div className="flex flex-wrap gap-3">
                     {product.partNames.map(({ partID, partName }, index) => (
-                      <div key={partID} className="px-2">
-                        <button
-                          className={`w-full px-4 py-2 border-2 rounded-lg ${
-                            selectedPart === index
-                              ? "border-black bg-gray-200"
-                              : "border-gray-300"
-                          }`}
-                          onClick={() => setSelectedPart(index)}
-                        >
-                          {partName}
-                        </button>
-                      </div>
+                      <button
+                        key={partID}
+                        className={`w-3/10 px-4 py-2 border-2 rounded-lg ${
+                          selectedPart === index
+                            ? "border-black bg-gray-200"
+                            : "border-gray-300"
+                        }`}
+                        onClick={() => setSelectedPart(index)}
+                      >
+                        {partName}
+                      </button>
                     ))}
-                  </Slider>
+                  </div>
                 </div>
               )}
-              {product.partColors && (
+
+              {/* Color Selection */}
+              {product.partNames && (
                 <div className="mt-4">
                   <h3 className="text-lg font-medium mb-2">Chọn màu:</h3>
-                  <Slider
-                    dots={false}
-                    infinite={false}
-                    speed={100}
-                    slidesToShow={5}
-                    slidesToScroll={5}
-                    responsive={[
-                      {
-                        breakpoint: 1024,
-                        settings: {
-                          slidesToShow: 4,
-                          slidesToScroll: 1,
-                        },
-                      },
-                      {
-                        breakpoint: 600,
-                        settings: {
-                          slidesToShow: 3,
-                          slidesToScroll: 1,
-                        },
-                      },
-                    ]}
-                  >
-                    {product.partColors.map(({ colorID, partColor }) => (
-                      <div key={colorID} className="px-2">
+                  <div className="flex flex-wrap gap-3">
+                    {product.partNames[selectedPart]?.partColors.map(
+                      ({ colorID, partColor }) => (
                         <button
+                          key={colorID}
                           className={`w-10 h-10 rounded-full border-2 ${
                             selectedColors[selectedPart]?.colorID === colorID
                               ? "border-black scale-110"
@@ -236,9 +192,9 @@ function ProductDetail() {
                             handleColorChange(selectedPart, colorID, partColor)
                           }
                         />
-                      </div>
-                    ))}
-                  </Slider>
+                      )
+                    )}
+                  </div>
                 </div>
               )}
               {/* Action Buttons */}
