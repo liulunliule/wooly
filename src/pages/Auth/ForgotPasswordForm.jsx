@@ -54,6 +54,7 @@ function ForgotPasswordForm() {
     const stt = await response?.meta?.requestStatus;
     console.log("stt", stt);
     navigate("/register");
+    window.scrollTo(0, 0);
     // if (stt === "fulfilled") {
     //   navigate("/register");
     // }

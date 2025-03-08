@@ -54,6 +54,7 @@ function Navbar() {
         .unwrap()
         .then(() => {
           navigate("/collection");
+          window.scrollTo(0, 0);
           setShowSearch(false);
         })
         .catch((error) => {

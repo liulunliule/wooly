@@ -1,8 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Logo from "~/assets/Logo";
 import Wooly_Logo from "~/assets/Logo/Wooly_logo.png";
 
 function Footer() {
+  const location = useLocation();
+
+  // Cuộn lên đầu trang mỗi khi location thay đổi
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <div>
       <div className="mt-20">
