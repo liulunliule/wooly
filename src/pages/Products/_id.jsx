@@ -8,6 +8,7 @@ import Hero_image from "~/assets/hero_img.jpg";
 import { setSelectedProducts } from "~/redux/features/checkoutSlice";
 import { formatPrice } from "~/utils/formatPrice";
 import { fetchLatestProducts } from "~/redux/features/activeProductSlice";
+import { ClipLoader } from "react-spinners";
 
 function ProductDetail() {
   const { productId } = useParams();
@@ -48,12 +49,12 @@ function ProductDetail() {
   }, [latestProductsStatus, dispatch]);
 
   useEffect(() => {
-    if (product?.partNames?.length > 0 && product?.partColors?.length > 0) {
+    if (product?.partNames?.length > 0) {
       const initialColors = {};
       product.partNames.forEach((part, index) => {
         initialColors[index] = {
-          colorID: product.partColors[0].colorID,
-          partColor: product.partColors[0].partColor,
+          colorID: part.partColors[0].colorID,
+          partColor: part.partColors[0].partColor,
         };
       });
       setSelectedColors(initialColors);
@@ -61,7 +62,11 @@ function ProductDetail() {
   }, [product]);
 
   if (productStatus === "loading")
-    return <p className="text-center">Đang tải sản phẩm...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader color="#36D7B7" size={50} />
+      </div>
+    );
   if (productStatus === "failed")
     return <p className="text-center text-red-500">Lỗi: {productError}</p>;
   if (!product) return <p className="text-center">Không tìm thấy sản phẩm.</p>;
@@ -129,6 +134,7 @@ function ProductDetail() {
 
     dispatch(setSelectedProducts([orderDetails]));
     navigate("/checkout");
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -174,7 +180,7 @@ function ProductDetail() {
               )}
 
               {/* Color Selection */}
-              {product.partNames && (
+              {product?.partNames && (
                 <div className="mt-4">
                   <h3 className="text-lg font-medium mb-2">Chọn màu:</h3>
                   <div className="flex flex-wrap gap-3">
@@ -227,15 +233,10 @@ function ProductDetail() {
               msOverflowStyle: "none",
             }}
           >
-            {/* <style>
-              {`
-        .overflow-y-auto::-webkit-scrollbar {
-          display: none;
-        }
-      `}
-            </style> */}
             {latestProductsStatus === "loading" ? (
-              <p className="text-center">Đang tải sản phẩm...</p>
+              <div className="flex justify-center items-center">
+                <ClipLoader color="#36D7B7" size={30} />
+              </div>
             ) : latestProductsStatus === "failed" ? (
               <p className="text-center text-red-500">
                 Lỗi: {latestProductsError}

@@ -2,9 +2,7 @@ import { useState } from "react";
 import {
   Button,
   TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
+  CircularProgress, // Import CircularProgress
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,8 +15,7 @@ function Checkout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState({ phone: "", address: "", note: "" });
-  const [isPaying, setIsPaying] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
+  const [isPaying, setIsPaying] = useState(false); // State để theo dõi trạng thái loading
 
   const selectedProducts = useSelector(
     (state) => state.checkout.selectedProducts
@@ -37,6 +34,9 @@ function Checkout() {
       alert("Vui lòng điền đầy đủ số điện thoại và địa chỉ.");
       return;
     }
+
+    setIsPaying(true); // Bắt đầu loading
+
     const orderData = {
       description: "Thanh toán đơn hàng",
       customerNote: form.note,
@@ -51,16 +51,24 @@ function Checkout() {
       })),
     };
 
-    dispatch(createPaymentLink(orderData)).then((response) => {
-      console.log("createPaymentLink(orderData) response", response);
+    dispatch(createPaymentLink(orderData))
+      .then((response) => {
+        console.log("createPaymentLink(orderData) response", response);
 
-      if (response?.payload?.checkoutUrl) {
-        window.location.href = response.payload.checkoutUrl;
-      } else {
+        if (response?.payload?.checkoutUrl) {
+          window.location.href = response.payload.checkoutUrl;
+        } else {
+          alert("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
+          // toast.error("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
+        }
+      })
+      .catch((error) => {
+        console.error("Lỗi khi tạo link thanh toán:", error);
         alert("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
-        // toast.error("Lỗi khi tạo link thanh toán, vui lòng thử lại!");
-      }
-    });
+      })
+      .finally(() => {
+        setIsPaying(false); // Kết thúc loading
+      });
   };
 
   return (
@@ -82,12 +90,10 @@ function Checkout() {
             <div className="flex-1">
               <p className="font-medium">{item.productName}</p>
               <p className="text-sm text-gray-500">
-                {/* {item?.pricePerProduct?.toLocaleString()}đ x {item.quantity} */}
                 {formatPrice(item.pricePerProduct)} x {item.quantity}
               </p>
             </div>
             <p className="font-semibold">
-              {/* {(item?.pricePerProduct * item?.quantity)?.toLocaleString()}đ */}
               {formatPrice(item.pricePerProduct * item.quantity)}
             </p>
           </div>
@@ -97,10 +103,7 @@ function Checkout() {
       {/* Tổng tiền */}
       <div className="flex justify-between items-center font-semibold text-lg py-4">
         <p>Tổng tiền:</p>
-        <p className="text-red-500">
-          {/* {totalAmount?.toLocaleString()}đ */}
-          {formatPrice(totalAmount)}
-        </p>
+        <p className="text-red-500">{formatPrice(totalAmount)}</p>
       </div>
 
       {/* Thông tin người nhận */}
@@ -137,8 +140,18 @@ function Checkout() {
             Quay lại giỏ hàng
           </Button>
         </Link>
-        <Button variant="contained" color="warning" onClick={handleCheckout}>
-          Thanh toán
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={handleCheckout}
+          disabled={isPaying}
+          style={{ cursor: isPaying ? "wait" : "pointer" }}
+        >
+          {isPaying ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Thanh toán"
+          )}
         </Button>
       </div>
     </div>

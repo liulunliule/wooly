@@ -12,6 +12,7 @@ import {
 } from "~/redux/features/cartSlice";
 import { setSelectedProducts } from "~/redux/features/checkoutSlice";
 import { formatPrice } from "~/utils/formatPrice";
+import { ClipLoader } from "react-spinners";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -25,19 +26,6 @@ function Cart() {
     dispatch(fetchCart());
   }, [dispatch]);
 
-  // const handleCheckboxChange = (event, product) => {
-  //   if (event.target.checked) {
-  //     dispatch(setSelectedProducts([...selectedProducts, product]));
-  //   } else {
-  //     dispatch(
-  //       setSelectedProducts(
-  //         selectedProducts.filter(
-  //           (p) => p.cartDetailId !== product.cartDetailId
-  //         )
-  //       )
-  //     );
-  //   }
-  // };
   const handleCheckboxChange = (event, product) => {
     const selectedProduct = {
       cartDetailId: product.cartDetailId,
@@ -98,14 +86,22 @@ function Cart() {
       return;
     }
     navigate("/checkout");
+    window.scrollTo(0, 0);
   };
-
-  console.log("selectedProducts", selectedProducts);
 
   const totalPrice = selectedProducts.reduce(
     (total, product) => total + product.pricePerProduct * product.quantity,
     0
   );
+
+  // Loading state
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader color="#36D7B7" size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="my-10">
@@ -113,9 +109,7 @@ function Cart() {
         <Title text1={"GIỎ HÀNG"} text2={"CỦA BẠN"} />
       </div>
 
-      {status === "loading" ? (
-        <div className="text-center text-lg">Đang tải giỏ hàng...</div>
-      ) : cartProducts.length > 0 ? (
+      {cartProducts.length > 0 ? (
         <div className="space-y-6">
           {cartProducts.map((product) => (
             <div
@@ -159,7 +153,6 @@ function Cart() {
               </div>
 
               <div className="text-sm text-gray-500 font-medium">
-                {/* <p>{product?.pricePerProduct?.toLocaleString()}đ</p> */}
                 <p>{formatPrice(product.pricePerProduct)}</p>
               </div>
 
@@ -180,13 +173,7 @@ function Cart() {
               </div>
 
               <div className="text-sm font-medium">
-                <p>
-                  {/* {(
-                    product.pricePerProduct * product.quantity
-                  ).toLocaleString()}
-                  đ */}
-                  {formatPrice(product.pricePerProduct * product.quantity)}
-                </p>
+                <p>{formatPrice(product.pricePerProduct * product.quantity)}</p>
               </div>
 
               <Button

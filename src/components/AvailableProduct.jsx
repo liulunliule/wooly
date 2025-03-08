@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchBestSellerProducts } from "~/redux/features/activeProductSlice";
 import { Link } from "react-router-dom";
 import { formatPrice } from "~/utils/formatPrice";
+import { ClipLoader } from "react-spinners";
 
 function AvailableProduct() {
   // const [products, setProducts] = useState([]);
@@ -26,6 +27,13 @@ function AvailableProduct() {
       dispatch(fetchBestSellerProducts());
     }
   }, [status, dispatch]);
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <ClipLoader color="#36D7B7" size={50} />
+      </div>
+    );
+  }
   return (
     <div className="my-10">
       <div className="text-center py-8 text-3xl">

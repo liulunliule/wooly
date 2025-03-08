@@ -43,6 +43,7 @@ function LoginForm() {
       })
       .then(() => {
         navigate(`/`);
+        window.scrollTo(0, 0);
       });
   };
 
