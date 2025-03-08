@@ -174,28 +174,29 @@ function ProductDetail() {
               )}
 
               {/* Color Selection */}
-              {product.partColors && (
+              {product.partNames && (
                 <div className="mt-4">
                   <h3 className="text-lg font-medium mb-2">Chọn màu:</h3>
                   <div className="flex flex-wrap gap-3">
-                    {product.partColors.map(({ colorID, partColor }) => (
-                      <button
-                        key={colorID}
-                        className={`w-10 h-10 rounded-full border-2 ${
-                          selectedColors[selectedPart]?.colorID === colorID
-                            ? "border-black scale-110"
-                            : "border-gray-300"
-                        }`}
-                        style={{ backgroundColor: partColor }}
-                        onClick={() =>
-                          handleColorChange(selectedPart, colorID, partColor)
-                        }
-                      />
-                    ))}
+                    {product.partNames[selectedPart]?.partColors.map(
+                      ({ colorID, partColor }) => (
+                        <button
+                          key={colorID}
+                          className={`w-10 h-10 rounded-full border-2 ${
+                            selectedColors[selectedPart]?.colorID === colorID
+                              ? "border-black scale-110"
+                              : "border-gray-300"
+                          }`}
+                          style={{ backgroundColor: partColor }}
+                          onClick={() =>
+                            handleColorChange(selectedPart, colorID, partColor)
+                          }
+                        />
+                      )
+                    )}
                   </div>
                 </div>
               )}
-
               {/* Action Buttons */}
               <div className="mt-6 flex gap-4">
                 <button
