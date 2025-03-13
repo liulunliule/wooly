@@ -153,10 +153,35 @@ function ProductDetail() {
 
             <div>
               <h1 className="text-2xl font-semibold">{product.productName}</h1>
-              <p className="text-xl text-red-500 font-medium mt-2">
-                {formatPrice(product.price)}
-              </p>
               <p className="mt-2 text-gray-600">{product.description}</p>
+              {product.price === 0 && (
+                <div className="mt-4">
+                  <p className="text-red-500 font-medium">
+                    Lưu ý: Vì đây là hàng đặt trước, <br />
+                    nên bạn vui lòng liên hệ chúng mình qua
+                  </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-gray-600">Zalo:</span>
+                    <input
+                      type="text"
+                      value="0843532640"
+                      readOnly
+                      className="border p-1 rounded-lg cursor-pointer bg-gray-100"
+                      onClick={(e) => e.target.select()}
+                    />
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText("0843532640");
+                        toast.success("Đã sao chép số điện thoại!");
+                      }}
+                      className="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Part Selection */}
               {product.partNames && (
                 <div className="mt-4">
@@ -205,18 +230,33 @@ function ProductDetail() {
               )}
               {/* Action Buttons */}
               <div className="mt-6 flex gap-4">
-                <button
-                  className="w-full sm:w-1/2 bg-orange-100 text-red-500 border-2 border-red-500 py-3 rounded-lg text-lg font-medium hover:bg-orange-200 transition"
-                  onClick={openPopup}
-                >
-                  Thêm vào giỏ hàng
-                </button>
-                <button
-                  className="w-full sm:w-1/2 bg-red-500 text-white py-3 rounded-lg text-lg font-medium hover:bg-red-600 transition"
-                  onClick={openPopupBuy}
-                >
-                  Mua ngay
-                </button>
+                {product.price === 0 ? (
+                  // Nút liên hệ Zalo khi giá = 0 (không có biểu tượng)
+                  <a
+                    href="https://zalo.me/0843532640"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-600 transition text-center"
+                  >
+                    Liên hệ Zalo
+                  </a>
+                ) : (
+                  // Nút "Thêm vào giỏ hàng" và "Mua ngay" khi giá > 0
+                  <>
+                    <button
+                      className="w-full sm:w-1/2 bg-orange-100 text-red-500 border-2 border-red-500 py-3 rounded-lg text-lg font-medium hover:bg-orange-200 transition"
+                      onClick={openPopup}
+                    >
+                      Thêm vào giỏ hàng
+                    </button>
+                    <button
+                      className="w-full sm:w-1/2 bg-red-500 text-white py-3 rounded-lg text-lg font-medium hover:bg-red-600 transition"
+                      onClick={openPopupBuy}
+                    >
+                      Mua ngay
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
