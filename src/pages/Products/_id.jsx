@@ -153,6 +153,10 @@ function ProductDetail() {
 
             <div>
               <h1 className="text-2xl font-semibold">{product.productName}</h1>
+              {product.price > 0 &&(
+              <p className="text-xl text-red-500 font-medium mt-2">
+                {formatPrice(product.price)}
+              </p>)}
               <p className="mt-2 text-gray-600">{product.description}</p>
               {product.price === 0 && (
                 <div className="mt-4">
